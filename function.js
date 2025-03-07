@@ -96,8 +96,8 @@ window.function = function (
       document.getElementById('download').addEventListener('click', function() {
         var element = document.getElementById('content');
         var button = this;
-        button.innerText = 'Downloading...';
-        button.className = 'downloading';
+        button.innerText = 'Generating...';
+        button.className = 'generating';
 
         // Clear Cache Before Generating
         caches.keys().then(names => {
@@ -123,17 +123,11 @@ window.function = function (
               hotfixes: ['px_scaling']
             }
           };
-          
-          // Generate PDF and Open in New Tab
-          html2pdf().set(opt).from(element).toPdf().output('blob').then(function(pdfBlob) {
-            var blobUrl = URL.createObjectURL(pdfBlob);
-            window.open(blobUrl, '_blank');
-            button.innerText = 'Done 🎉';
-            button.className = 'done';
-            setTimeout(function() { 
-              button.innerText = 'Download';
-              button.className = ''; 
-            }, 2000);
+
+          // Generate PDF but wait for user download
+          html2pdf().set(opt).from(element).save().then(() => {
+            button.innerText = 'Download';
+            button.className = ''; 
           });
         });
       });
