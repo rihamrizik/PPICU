@@ -11,14 +11,14 @@ window.function = function (
   fidelity,
   customDimensions
 ) {
-  // FIDELITY MAPPING
+  // Fidelity Mapping
   const fidelityMap = {
     low: 1,
     standard: 1.5,
     high: 2,
   };
 
-  // DYNAMIC VALUES
+  // Get dynamic values
   html = html.value ?? "No HTML set.";
   fileName = fileName.value ?? "file";
   format = format.value ?? "a4";
@@ -33,7 +33,7 @@ window.function = function (
     ? customDimensions.value.split(",").map(Number)
     : null;
 
-  // DOCUMENT DIMENSIONS
+  // Format dimensions
   const formatDimensions = {
     a0: [4967, 7022],
     a1: [3508, 4967],
@@ -50,15 +50,16 @@ window.function = function (
     legal: [1276, 2102],
   };
 
-  // GET FINAL DIMENSIONS FROM SELECTED FORMAT
+  // Determine final document size
   const dimensions = customDimensions || formatDimensions[format];
   const finalDimensions = dimensions.map((dimension) =>
     Math.round(dimension / zoom)
   );
 
+  // Custom CSS for the page
   const customCSS = `
     body {
-      margin: 0!important
+      margin: 0 !important;
     }
     button#download {
       position: fixed;
@@ -82,7 +83,7 @@ window.function = function (
     }
   `;
 
-  // HTML THAT IS RETURNED AS A RENDERABLE URL
+  // HTML content that will be rendered
   const originalHTML = `
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <style>${customCSS}</style>
@@ -99,36 +100,43 @@ window.function = function (
         button.innerText = 'Generating...';
         button.className = 'generating';
 
-        // Clear Cache Before Generating
+        // Fix refresh issue by forcing a DOM reflow
+        element.style.display = 'none';
+        void element.offsetHeight;
+        element.style.display = 'block';
+
+        // Clear Cache Before Generating PDF
         caches.keys().then(names => {
           for (let name of names) caches.delete(name);
         }).then(() => {
-          var opt = {
-            pagebreak: { 
-              mode: ['css'], 
-              before: ${JSON.stringify(breakBefore)}, 
-              after: ${JSON.stringify(breakAfter)}, 
-              avoid: ${JSON.stringify(breakAvoid)} 
-            },
-            margin: ${margin},
-            filename: '${fileName}',
-            html2canvas: {
-              useCORS: true,
-              scale: ${quality}
-            },
-            jsPDF: {
-              unit: 'px',
-              orientation: '${orientation}',
-              format: [${finalDimensions}],
-              hotfixes: ['px_scaling']
-            }
-          };
+          setTimeout(() => { // Delay to allow content refresh
+            var opt = {
+              pagebreak: { 
+                mode: ['css'], 
+                before: ${JSON.stringify(breakBefore)}, 
+                after: ${JSON.stringify(breakAfter)}, 
+                avoid: ${JSON.stringify(breakAvoid)} 
+              },
+              margin: ${margin},
+              filename: '${fileName}',
+              html2canvas: {
+                useCORS: true,
+                scale: ${quality}
+              },
+              jsPDF: {
+                unit: 'px',
+                orientation: '${orientation}',
+                format: [${finalDimensions}],
+                hotfixes: ['px_scaling']
+              }
+            };
 
-          // Generate PDF but wait for user download
-          html2pdf().set(opt).from(element).save().then(() => {
-            button.innerText = 'Download';
-            button.className = ''; 
-          });
+            // Generate PDF on click (manual download)
+            html2pdf().set(opt).from(element).save().then(() => {
+              button.innerText = 'Download';
+              button.className = ''; 
+            });
+          }, 500); // Slight delay before generating
         });
       });
     </script>
