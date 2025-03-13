@@ -166,14 +166,16 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
       html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
         button.innerText = 'Done 🎉';
         button.className = 'done';
+
+        // Trigger page refresh after 2 seconds
         setTimeout(function() {
-          button.innerText = 'Download';
-          button.className = '';
-        }, 2000);
+          location.reload(); // Refresh the page
+        }, 2000); // Adjust the delay as needed
       }).save();
     });
   });
 </script>
+
 
       `;
     var encodedHtml = encodeURIComponent(originalHTML);
