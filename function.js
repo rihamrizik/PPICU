@@ -140,40 +140,41 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
       </div>
       <div id="content">${html}</div>
       </div>
-      <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('download').addEventListener('click', function() {
-          var element = document.getElementById('content');
-          var button = this;
-          button.innerText = 'Downloading...';
-          button.className = 'downloading';
-  
-          var opt = {
-            pagebreak: { mode: ['css'], before: ${JSON.stringify(breakBefore)}, after: ${JSON.stringify(breakAfter)}, avoid: ${JSON.stringify(breakAvoid)} },
-            margin: ${margin},
-            filename: '${fileName}',
-            html2canvas: {
-              useCORS: true,
-              scale: ${quality}
-            },
-            jsPDF: {
-              unit: 'px',
-              orientation: '${orientation}',
-              format: [${finalDimensions}],
-              hotfixes: ['px_scaling']
-            }
-          };
-          html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
-            button.innerText = 'Done 🎉';
-            button.className = 'done';
-            setTimeout(function() { 
-              button.innerText = 'Download';
-              button.className = ''; 
-            }, 2000);
-          }).save();
-        });
-      });
-      </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('download').addEventListener('click', function() {
+      var element = document.getElementById('content');
+      var button = this;
+      button.innerText = 'Downloading...';
+      button.className = 'downloading';
+
+      var opt = {
+        margin: 0, // Adjust as needed
+        filename: 'report.pdf', // Adjust filename as needed
+        html2canvas: {
+          useCORS: true,
+          scale: 2 // Adjust as needed for quality
+        },
+        jsPDF: {
+          unit: 'px',
+          orientation: 'portrait', // Adjust as needed
+          format: 'a4', // Adjust dimensions as needed
+          hotfixes: ['px_scaling']
+        }
+      };
+
+      html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
+        button.innerText = 'Done 🎉';
+        button.className = 'done';
+        setTimeout(function() {
+          button.innerText = 'Download';
+          button.className = '';
+        }, 2000);
+      }).save();
+    });
+  });
+</script>
+
       `;
     var encodedHtml = encodeURIComponent(originalHTML);
     return "data:text/html;charset=utf-8," + encodedHtml;
