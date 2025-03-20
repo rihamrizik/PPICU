@@ -70,20 +70,20 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
 
     // LOG SETTINGS TO CONSOLE
     console.log(
-        `Filename: ${fileName}\n` +
-        `Format: ${format}\n` +
-        `Dimensions: ${dimensions}\n` +
-        `Zoom: ${zoom}\n` +
-        `Final Dimensions: ${finalDimensions}\n` +
-        `Orientation: ${orientation}\n` +
-        `Margin: ${margin}\n` +
-        `Break before: ${breakBefore}\n` +
-        `Break after: ${breakAfter}\n` +
-        `Break avoid: ${breakAvoid}\n` +
-        `Quality: ${quality}`
+        Filename: ${fileName}\n +
+        Format: ${format}\n +
+        Dimensions: ${dimensions}\n +
+        Zoom: ${zoom}\n +
+        Final Dimensions: ${finalDimensions}\n +
+        Orientation: ${orientation}\n +
+        Margin: ${margin}\n +
+        Break before: ${breakBefore}\n +
+        Break after: ${breakAfter}\n +
+        Break avoid: ${breakAvoid}\n +
+        Quality: ${quality}
     );
 
-    const customCSS = `
+    const customCSS = 
     body {
       margin: 0!important
     }
@@ -128,10 +128,10 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
       background-color: rgb(0 0 0 / 32%);
       border-radius: 4px;
     }
-    `;
+    ;
 
     // HTML THAT IS RETURNED AS A RENDERABLE URL
-    const originalHTML = `
+    const originalHTML = 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
       <style>${customCSS}</style>
       <div class="main">
@@ -177,7 +177,7 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
 </script>
 
 
-      `;
+      ;
     var encodedHtml = encodeURIComponent(originalHTML);
     return "data:text/html;charset=utf-8," + encodedHtml;
 };
