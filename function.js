@@ -83,36 +83,36 @@ window.function = function (html, fileName, format, zoom, orientation, margin, b
         `Quality: ${quality}`
     );
 
-    // HTML THAT IS RETURNED AS A RENDERABLE URL
-    const originalHTML = `
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-      <div id="content">${html}</div>
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          var element = document.getElementById('content');
-          var opt = {
-            margin: ${margin},
-            filename: '${fileName}.pdf',
-            html2canvas: {
-              useCORS: true,
-              scale: ${quality}
-            },
-            jsPDF: {
-              unit: 'px',
-              orientation: '${orientation}',
-              format: '${format}',
-              hotfixes: ['px_scaling']
-            }
-          };
+    // CREATE A TEMPORARY DIV TO HOLD THE HTML CONTENT
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
 
-          html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
-            // Trigger download immediately
-            pdf.save('${fileName}.pdf');
-          });
+    // GENERATE PDF DIRECTLY
+    const opt = {
+        margin: parseFloat(margin),
+        filename: `${fileName}.pdf`,
+        html2canvas: {
+            useCORS: true,
+            scale: quality,
+        },
+        jsPDF: {
+            unit: "px",
+            orientation: orientation,
+            format: format,
+            hotfixes: ["px_scaling"],
+        },
+    };
+
+    // USE html2pdf.js TO GENERATE AND DOWNLOAD THE PDF
+    html2pdf()
+        .set(opt)
+        .from(tempDiv)
+        .toPdf()
+        .get("pdf")
+        .then((pdf) => {
+            pdf.save(`${fileName}.pdf`);
         });
-      </script>
-    `;
 
-    var encodedHtml = encodeURIComponent(originalHTML);
-    return "data:text/html;charset=utf-8," + encodedHtml;
+    // RETURN A DUMMY VALUE (NOT USED)
+    return "PDF generation initiated.";
 };
